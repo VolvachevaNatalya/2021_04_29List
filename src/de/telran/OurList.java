@@ -2,6 +2,7 @@ package de.telran;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public  interface OurList<E> extends Iterable<E>{
@@ -54,6 +55,8 @@ public  interface OurList<E> extends Iterable<E>{
          * @throws IndexOutOfBoundsException if the index is incorrect
          */
         public void set(int index, E elt);
+
+        public void sort(Comparator<E> comparator);
 
 }
 

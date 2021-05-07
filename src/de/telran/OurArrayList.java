@@ -1,6 +1,7 @@
 package de.telran;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class OurArrayList<E> implements OurList<E> {
@@ -32,17 +33,6 @@ public class OurArrayList<E> implements OurList<E> {
         checkIndex(index);
         return (E)source[index];
     }
-
-//    @Override
-//    public E remove(int index) {
-//        checkIndex(index);
-//        E temp = get(index);
-//        for (int i = index; i < size-1; i++) {
-//            source[index] = source[index+1];
-//        }
-//        size--;
-//        return temp;
-//    }
 
     @Override
     public E remove(int index) {
@@ -84,7 +74,6 @@ public class OurArrayList<E> implements OurList<E> {
             }
         }
         return -1;
-
     }
 
   @Override
@@ -106,58 +95,96 @@ public class OurArrayList<E> implements OurList<E> {
         source[index] = elt;
     }
 
-//    @Override
-//    public boolean contains(E elt) {
-//        for (int i = 0; i < size; i++) {
-//            if(elt.equals(source[i])) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    /**
+     * The method must sort this list according to the comparator rule
+     * @param comparator
+     */
+    @Override
+    public void sort(Comparator<E> comparator) {
+        for (int i = 0; i <source.length; i++) {
+            for (int j = i+1; j <source.length; j++) {
+                int temp = 0;
+                if (comparator.compare((E) source[j+1], (E) source[j]) > 0) {
+                    source[i] = source[j];
+                    source[j] = temp;
+                }
+            }
+        }
+        // if (num1<num2) - old style writing for sorting an array with numbers
+        // if(comparator.compare(o1, o2)<0) - new style of sorting out source array of objects
+        // TODO implement any kind of sort using comparator instead of the operators '>' and '<'
+
+
+    }
+
     @Override
     public boolean contains(E elt) {
         return findIndexOfElement(elt) != -1;
-     
-    }
+         }
     
     private void checkIndex(int x) throws IndexOutOfBoundsException {
         if(x<0 || x >= size) {
             throw new IndexOutOfBoundsException("Index " + x + " is not correct");
         }
-
     }
-
-//====================================================================
-
+//    @Override
+//    public Iterator<E> iterator() {
+//        Iterator<E> iterator = new ForwardIterator<>((E[])source, size);
+//        return iterator;
+//    }
+//    private class ForwardIterator<T> implements Iterator<T> {
+//        int size;
+//        T[] source;
+//        int currentElementIndex = 0;
+//
+//        public ForwardIterator(T[] source, int size) {
+//            this.source = source;
+//            this.size = size;
+//            }
+//
+//        @Override
+//        public boolean hasNext() {
+//            return currentElementIndex < size;
+//        }
+//
+//        @Override
+//        public T next() {
+//            T res = source[currentElementIndex];
+//            currentElementIndex++;
+//            return res;
+//        }
+//
+//    }
     @Override
     public Iterator<E> iterator() {
-        Iterator<E> iterator = new ForwardIterator<>((E[])source);
+        Iterator<E> iterator = new BackwardIterator<>((E[])source, size);
         return iterator;
     }
 
-    private static class ForwardIterator<T> implements Iterator<T> {
-        private Object[] sourceNew;
-        private int curIndex;
+    private class BackwardIterator<T> implements Iterator<T> {
+        int size;
+        T[] source;
+        int currentElementIndex = 0;
 
-        public ForwardIterator(T[] source) {
-            this.sourceNew = source;
-            this.curIndex = 0;
-            }
+        public BackwardIterator(T[] source, int size) {
+            this.source = source;
+            this.size = size;
+            this.currentElementIndex = size-1;
+        }
 
         @Override
         public boolean hasNext() {
-            if(curIndex < sourceNew.length ) {
-                return true;
-            }
-            return false;
+            return currentElementIndex >= 0;
         }
 
         @Override
         public T next() {
-        return (T) sourceNew[curIndex++];
+            T res = source[currentElementIndex];
+            currentElementIndex--;
+            return res;
         }
-
     }
 }
+
+
 
